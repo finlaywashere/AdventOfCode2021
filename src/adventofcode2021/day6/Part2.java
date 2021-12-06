@@ -11,13 +11,13 @@ public class Part2 {
 	public static void main(String[] args) throws Exception{
 		Scanner in = new Scanner(new FileReader(new File("data/day6.txt")));
 		
-		Map<Integer,Integer> count = new HashMap<Integer,Integer>();
+		Map<Integer,Long> count = new HashMap<Integer,Long>();
 		
 		String s = in.nextLine();
 		for(String s1 : s.split(",")) {
 			Integer i = Integer.valueOf(s1);
 			if(!count.containsKey(i))
-				count.put(i, 1);
+				count.put(i, (long) 1);
 			else
 				count.put(i, count.get(i)+1);
 		}
@@ -33,10 +33,10 @@ public class Part2 {
 		}
 		System.out.println(countS);
 	}
-	private static Map<Integer,Integer> processDay(Map<Integer,Integer> input){
-		Map<Integer,Integer> ret = new HashMap<Integer,Integer>();
+	private static Map<Integer,Long> processDay(Map<Integer,Long> input){
+		Map<Integer,Long> ret = new HashMap<Integer,Long>();
 		for(int i : input.keySet()) {
-			int count = input.get(i);
+			long count = input.get(i);
 			if(i == 0) {
 				if(!ret.containsKey(6))
 					ret.put(6, count);
