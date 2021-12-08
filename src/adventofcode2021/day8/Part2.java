@@ -50,15 +50,28 @@ public class Part2 {
 			for(char c = 'a'; c <= 'z'; c++) {
 				difference.put(c, 0);
 			}
-			for(Character c : diff1) {
-				difference.put(c, difference.get(c)+1);
+			boolean done = false;
+			if(diff1.size() == 4) {
+				for(Character c : diff1) {
+					difference.put(c, difference.get(c)+1);
+				}
+				done = diff1.size() != 4;
 			}
-			for(Character c : diff2) {
-				difference.put(c, difference.get(c)+1);
+			
+			if(diff2.size() == 4 || !done) {
+				for(Character c : diff2) {
+					difference.put(c, difference.get(c)+1);
+				}
+				if(diff2.size() != 4)
+					done = true;
 			}
-			for(Character c : diff3) {
-				difference.put(c, difference.get(c)+1);
+			
+			if(diff3.size() == 4 || !done) {
+				for(Character c : diff3) {
+					difference.put(c, difference.get(c)+1);
+				}
 			}
+			
 			char[] CE = {0,0};
 			for(Character c : difference.keySet()) {
 				if(difference.get(c) > 1) {
@@ -120,6 +133,9 @@ public class Part2 {
 					count++;
 				}
 			}
+			char tmp = F;
+			F = C;
+			C = tmp;
 			char G = findDifference(A+""+B+""+C+""+D+""+E+""+F, split3[eight]).iterator().next();
 			char[] mapping = {A,C,B,D,F,E,G};
 			String output = "";
