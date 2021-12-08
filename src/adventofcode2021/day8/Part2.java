@@ -12,8 +12,7 @@ public class Part2 {
 	public static void main(String[] args) throws Exception{
 		Scanner in = new Scanner(new FileReader(new File("data/day8.txt")));
 		
-		int count = 0;
-		
+		long count = 0;
 		while(in.hasNextLine()) {
 			String s = in.nextLine();
 			String[] split = s.split("\\|");
@@ -40,6 +39,7 @@ public class Part2 {
 					}
 				}
 			}
+			Set<Character> fourDiff = findDifference(split3[one], split3[four]);
 			char A = findDifference(split3[one], split3[seven]).iterator().next();
 			
 			Set<Character> diff1 = findDifference(split3[fiveLong[0]], split3[fiveLong[1]]);
@@ -50,43 +50,63 @@ public class Part2 {
 			for(char c = 'a'; c <= 'z'; c++) {
 				difference.put(c, 0);
 			}
-			boolean done = false;
-			if(diff1.size() == 4) {
-				for(Character c : diff1) {
-					difference.put(c, difference.get(c)+1);
-				}
-				done = diff1.size() != 4;
-			}
 			
-			if(diff2.size() == 4 || !done) {
-				for(Character c : diff2) {
-					difference.put(c, difference.get(c)+1);
-				}
-				if(diff2.size() != 4)
-					done = true;
+			int three = 0;
+			if(diff1.size() == 4)
+				three = fiveLong[2];
+			if(diff2.size() == 4)
+				three = fiveLong[0];
+			if(diff3.size() == 4)
+				three = fiveLong[1];
+			int[] possiblyFive = new int[2];
+			int index = 0;
+			for(int i : fiveLong) {
+				if(i == three)
+					continue;
+				possiblyFive[index] = i;
+				index++;
 			}
-			
-			if(diff3.size() == 4 || !done) {
-				for(Character c : diff3) {
-					difference.put(c, difference.get(c)+1);
+			int[] counts = new int[26];
+			for(int i1 : fiveLong) {
+				for(char c1 : split3[i1].toCharArray())
+					counts[c1-'a']++;
+			}
+			char F = 0;
+			int five = 0;
+			for(int i = 0; i < counts.length; i++) {
+				if(counts[i] == 2) {
+					for(int i1 = 0; i1 < fiveLong.length; i1++) {
+						String s1 = split3[fiveLong[i1]];
+						char c1 = (char) ('a'+i);
+						if(!s1.contains(""+c1))
+							continue;
+						boolean found = true;
+						for(char c : fourDiff) {
+							if(s1.contains(""+c) && found) {
+								found = true;
+							}else {
+								found = false;
+							}
+						}
+						if(found) {
+							F = (char) ('a'+i);
+							five = fiveLong[i1];
+							break;
+						}
+					}
 				}
 			}
-			
-			char[] CE = {0,0};
-			for(Character c : difference.keySet()) {
-				if(difference.get(c) > 1) {
-					if(CE[0] != 0)
-						CE[1] = c;
-					else
-						CE[0] = c;
+			int two = (possiblyFive[0] == five ? possiblyFive[1] : possiblyFive[0]);
+			char E = 0;
+			for(int i = 0; i < counts.length; i++) {
+				if(counts[i] == 1) {
+					// Possible E
+					if(split3[two].contains(""+((char) ('a'+i)))) {
+						E = (char) ('a' + i);
+						break;
+					}
 				}
 			}
-			char C1 = findDifference(CE[0]+""+CE[1], split3[one]).iterator().next();
-			char C = (C1 == CE[0] ? CE[1] : CE[0]);
-			char E = (C == CE[0] ? CE[1] : CE[0]);
-			char[] chars = split3[one].toCharArray();
-			char F = (C == chars[0] ? chars[1] : chars[0]);
-			
 			char[] BD = {0,0};
 			Set<Character> BDDiff = findDifference(split3[four], split3[one]);
 			
@@ -96,54 +116,29 @@ public class Part2 {
 				else
 					BD[0] = c;
 			}
-			int five = 0;
-			char D = 0;
-			char B = 0;
-			for(int i = 0; i < split3.length; i++) {
-				String s1 = split3[i];
-				if(s1.length() == 5) {
-					boolean oneB = s1.contains(""+BD[0]);
-					boolean twoB = s1.contains(""+BD[1]);
-					if(oneB && twoB) {
-						five = i;
-					}else if(oneB || twoB) {
-						if(oneB)
-							D = BD[0];
-						else
-							D = BD[1];
-						
-					}
-				}
+			String BDS = BD[0]+""+BD[1];
+			Set<Character> DS = findDifference(BDS, split3[two]);
+			char B = DS.iterator().next();
+			char D = (BD[0] == B ? BD[1] : BD[0]);
+			Set<Character> CPossible = singleDifference(split3[three], split3[five]);
+			char C = 0;
+			for(Character c : CPossible) {
+				if(c != B)
+					C = c;
 			}
-			if(split3[five].contains(""+BD[0]))
-				B = BD[0];
-			else
-				B = BD[1];
 			
 			String[] split2 = split[1].trim().split(" ");
-			for(int i = 0; i < 4; i++) {
-				String s1 = split2[i];
-				if(s1.length() == 2) {
-					count++;
-				}else if(s1.length() == 3) {
-					count++;
-				}else if(s1.length() == 4) {
-					count++;
-				}else if(s1.length() == 7) {
-					count++;
-				}
-			}
-			char tmp = F;
-			F = C;
-			C = tmp;
+			
 			char G = findDifference(A+""+B+""+C+""+D+""+E+""+F, split3[eight]).iterator().next();
 			char[] mapping = {A,C,B,D,F,E,G};
-			String output = "";
+			long output = 0;
 			for(String s1 : split2) {
 				int value = getNumber(mapping, s1);
+				output *= 10;
 				output += value;
 			}
 			System.out.println(output);
+			count += output;
 		}
 		
 		in.close();
@@ -166,6 +161,23 @@ public class Part2 {
 			return 6;
 		}
 		return 0;
+	}
+	private static Set<Character> singleDifference(String s1, String s2) {
+		char[] c1 = s1.toCharArray();
+		char[] c2 = s2.toCharArray();
+		Set<Character> diff = new LinkedHashSet<Character>();
+		for(char c : c1) {
+			boolean found = false;
+			for(char c3 : c2) {
+				if(c3 == c) {
+					found = true;
+					break;
+				}
+			}
+			if(!found)
+				diff.add(c);
+		}
+		return diff;
 	}
 	private static Set<Character> findDifference(String s1, String s2) {
 		char[] c1 = s1.toCharArray();
@@ -196,39 +208,32 @@ public class Part2 {
 		return diff;
 	}
 	private static int getNumber(char[] mappings, String input) {
-		if(input.contains(""+mappings[getValue('a')])) {
+		if(input.length() == 3)
+			return 7;
+		if(input.length() == 2)
+			return 1;
+		if(input.length() == 7)
+			return 8;
+		if(input.length() == 4)
+			return 4;
+		if(input.length() == 6) {
+			if(input.contains(""+mappings[getValue('e')])) {
+				return 6;
+			}else if(!input.contains(""+mappings[getValue('d')])){
+				return 0;
+			}else {
+				return 9;
+			}
+		}
+		if(input.length() == 5) {
 			if(input.contains(""+mappings[getValue('b')])) {
-				if(input.contains(""+mappings[getValue('c')])) {
-					if(input.contains(""+mappings[getValue('d')])) {
-						if(input.contains(""+mappings[getValue('e')])) {
-							return 9;
-						}else {
-							return 8;
-						}
-					}else {
-						return 0;
-					}
-				}else {
-					if(input.contains(""+mappings[getValue('e')])) {
-						return 6;
-					}else {
-						return 5;
-					}
-				}
-			}else if(input.contains(""+mappings[getValue('c')])) {
-				if(input.contains(""+mappings[getValue('f')])) {
-					return 3;
-				}else if(input.contains(""+mappings[getValue('e')])){
+				return 5;
+			}else {
+				if(input.contains(""+mappings[getValue('e')])) {
 					return 2;
 				}else {
-					return 7;
+					return 3;
 				}
-			}
-		}else {
-			if(input.contains(""+mappings[getValue('b')])) {
-				return 4;
-			}else {
-				return 1;
 			}
 		}
 		return -1;
