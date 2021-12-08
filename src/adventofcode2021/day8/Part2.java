@@ -70,7 +70,45 @@ public class Part2 {
 						CE[0] = c;
 				}
 			}
+			char C1 = findDifference(CE[0]+""+CE[1], split3[one]).iterator().next();
+			char C = (C1 == CE[0] ? CE[1] : CE[0]);
+			char E = (C == CE[0] ? CE[1] : CE[0]);
+			char[] chars = split3[one].toCharArray();
+			char F = (C == chars[0] ? chars[1] : chars[0]);
 			
+			char[] BD = {0,0};
+			Set<Character> BDDiff = findDifference(split3[four], split3[one]);
+			
+			for(Character c : BDDiff) {
+				if(BD[0] != 0)
+					BD[1] = c;
+				else
+					BD[0] = c;
+			}
+			int three = 0, five = 0;
+			char D = 0;
+			char B = 0;
+			for(int i = 0; i < split3.length; i++) {
+				String s1 = split3[i];
+				if(s1.length() == 5) {
+					boolean oneB = s1.contains(""+BD[0]);
+					boolean twoB = s1.contains(""+BD[1]);
+					if(oneB && twoB) {
+						five = i;
+					}else if(oneB || twoB) {
+						three = i;
+						if(oneB)
+							D = BD[0];
+						else
+							D = BD[1];
+						
+					}
+				}
+			}
+			if(split3[five].contains(""+BD[0]))
+				B = BD[0];
+			else
+				B = BD[1];
 			
 			String[] split2 = split[1].trim().split(" ");
 			for(int i = 0; i < 4; i++) {
@@ -85,6 +123,8 @@ public class Part2 {
 					count++;
 				}
 			}
+			char G = findDifference(A+""+B+""+C+""+D+""+E+""+F, split3[eight]).iterator().next();
+			
 		}
 		
 		in.close();
