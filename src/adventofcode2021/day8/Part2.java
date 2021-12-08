@@ -17,7 +17,6 @@ public class Part2 {
 		while(in.hasNextLine()) {
 			String s = in.nextLine();
 			String[] split = s.split("\\|");
-			
 			String[] split3 = split[0].split(" ");
 			
 			int one = 0,four = 0,seven = 0,eight = 0;
@@ -41,7 +40,6 @@ public class Part2 {
 					}
 				}
 			}
-			char[] mappings = new char[7];
 			char A = findDifference(split3[one], split3[seven]).iterator().next();
 			
 			Set<Character> diff1 = findDifference(split3[fiveLong[0]], split3[fiveLong[1]]);
@@ -85,7 +83,7 @@ public class Part2 {
 				else
 					BD[0] = c;
 			}
-			int three = 0, five = 0;
+			int five = 0;
 			char D = 0;
 			char B = 0;
 			for(int i = 0; i < split3.length; i++) {
@@ -96,7 +94,6 @@ public class Part2 {
 					if(oneB && twoB) {
 						five = i;
 					}else if(oneB || twoB) {
-						three = i;
 						if(oneB)
 							D = BD[0];
 						else
@@ -124,7 +121,13 @@ public class Part2 {
 				}
 			}
 			char G = findDifference(A+""+B+""+C+""+D+""+E+""+F, split3[eight]).iterator().next();
-			
+			char[] mapping = {A,C,B,D,F,E,G};
+			String output = "";
+			for(String s1 : split2) {
+				int value = getNumber(mapping, s1);
+				output += value;
+			}
+			System.out.println(output);
 		}
 		
 		in.close();
@@ -175,5 +178,43 @@ public class Part2 {
 				diff.add(c);
 		}
 		return diff;
+	}
+	private static int getNumber(char[] mappings, String input) {
+		if(input.contains(""+mappings[getValue('a')])) {
+			if(input.contains(""+mappings[getValue('b')])) {
+				if(input.contains(""+mappings[getValue('c')])) {
+					if(input.contains(""+mappings[getValue('d')])) {
+						if(input.contains(""+mappings[getValue('e')])) {
+							return 9;
+						}else {
+							return 8;
+						}
+					}else {
+						return 0;
+					}
+				}else {
+					if(input.contains(""+mappings[getValue('e')])) {
+						return 6;
+					}else {
+						return 5;
+					}
+				}
+			}else if(input.contains(""+mappings[getValue('c')])) {
+				if(input.contains(""+mappings[getValue('f')])) {
+					return 3;
+				}else if(input.contains(""+mappings[getValue('e')])){
+					return 2;
+				}else {
+					return 7;
+				}
+			}
+		}else {
+			if(input.contains(""+mappings[getValue('b')])) {
+				return 4;
+			}else {
+				return 1;
+			}
+		}
+		return -1;
 	}
 }
