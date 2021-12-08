@@ -2,7 +2,11 @@ package adventofcode2021.day8;
 
 import java.io.File;
 import java.io.FileReader;
+import java.util.HashMap;
+import java.util.LinkedHashSet;
+import java.util.Map;
 import java.util.Scanner;
+import java.util.Set;
 
 public class Part2 {
 	public static void main(String[] args) throws Exception{
@@ -14,39 +18,60 @@ public class Part2 {
 			String s = in.nextLine();
 			String[] split = s.split("\\|");
 			
-			char[] mappings = new char[26];
-			for(int i = 0; i < 7; i++) {
-				int[] tmpCount = new int[7];
-				for(String s1 : split[0].split(" ")) {
-					if(s1.length() == 2) {
-						// 1
-						if(i == 1 || i == 4) {
-							for(char c : s1.toCharArray()) {
-								tmpCount[getValue(c)] += 1;
-							}
-						}
-					}else if(s1.length() == 3) {
-						if(i == 1 || i == 4 || i == 0) {
-							for(char c : s1.toCharArray()) {
-								tmpCount[getValue(c)] += 1;
-							}
-						}
-					}else if(s1.length() == 4) {
-						if(i == 1 || i == 4 || i == 2 || i == 3) {
-							for(char c : s1.toCharArray()) {
-								tmpCount[getValue(c)] += 1;
-							}
-						}
-					}else if(s1.length() == 7) {
-						for(char c : s1.toCharArray()) {
-							tmpCount[getValue(c)] += 1;
-						}
+			String[] split3 = split[0].split(" ");
+			
+			int one = 0,four = 0,seven = 0,eight = 0;
+			int[] fiveLong = {-1,-1,-1};
+			for(int i = 0; i < split3.length; i++) {
+				String s1 = split3[i];
+				if(s1.length() == 2) {
+					one = i;
+				}else if(s1.length() == 3) {
+					seven = i;
+				}else if(s1.length() == 4) {
+					four = i;
+				}else if(s1.length() == 7) {
+					eight = i;
+				}else if(s1.length() == 5) {
+					for(int i1 = 0; i1 < fiveLong.length; i1++) {
+						if(fiveLong[i1] != -1)
+							continue;
+						fiveLong[i1] = i;
+						break;
 					}
 				}
-				for(int i1 : tmpCount) {
-					System.out.println(i1+"");
+			}
+			char[] mappings = new char[7];
+			char A = findDifference(split3[one], split3[seven]).iterator().next();
+			
+			Set<Character> diff1 = findDifference(split3[fiveLong[0]], split3[fiveLong[1]]);
+			Set<Character> diff2 = findDifference(split3[fiveLong[1]], split3[fiveLong[2]]);
+			Set<Character> diff3 = findDifference(split3[fiveLong[0]], split3[fiveLong[2]]);
+			
+			Map<Character,Integer> difference = new HashMap<Character,Integer>();
+			for(char c = 'a'; c <= 'z'; c++) {
+				difference.put(c, 0);
+			}
+			for(Character c : diff1) {
+				difference.put(c, difference.get(c)+1);
+			}
+			for(Character c : diff2) {
+				difference.put(c, difference.get(c)+1);
+			}
+			for(Character c : diff3) {
+				difference.put(c, difference.get(c)+1);
+			}
+			char[] CE = {0,0};
+			for(Character c : difference.keySet()) {
+				if(difference.get(c) > 1) {
+					if(CE[0] != 0)
+						CE[1] = c;
+					else
+						CE[0] = c;
 				}
 			}
+			
+			
 			String[] split2 = split[1].trim().split(" ");
 			for(int i = 0; i < 4; i++) {
 				String s1 = split2[i];
@@ -82,5 +107,33 @@ public class Part2 {
 			return 6;
 		}
 		return 0;
+	}
+	private static Set<Character> findDifference(String s1, String s2) {
+		char[] c1 = s1.toCharArray();
+		char[] c2 = s2.toCharArray();
+		Set<Character> diff = new LinkedHashSet<Character>();
+		for(char c : c1) {
+			boolean found = false;
+			for(char c3 : c2) {
+				if(c3 == c) {
+					found = true;
+					break;
+				}
+			}
+			if(!found)
+				diff.add(c);
+		}
+		for(char c : c2) {
+			boolean found = false;
+			for(char c3 : c1) {
+				if(c3 == c) {
+					found = true;
+					break;
+				}
+			}
+			if(!found)
+				diff.add(c);
+		}
+		return diff;
 	}
 }
