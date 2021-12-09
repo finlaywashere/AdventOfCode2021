@@ -217,11 +217,11 @@ public class Part2 {
 		if(input.length() == 4)
 			return 4;
 		if(input.length() == 6) {
-			if(input.contains(""+mappings[getValue('e')])) {
+			if(input.contains(""+mappings[getValue('e')]) && !input.contains(""+mappings[getValue('c')])) {
 				return 6;
 			}else if(!input.contains(""+mappings[getValue('d')])){
 				return 0;
-			}else {
+			}else if(input.contains(""+mappings[getValue('f')])){
 				return 9;
 			}
 		}
@@ -231,7 +231,7 @@ public class Part2 {
 			}else {
 				if(input.contains(""+mappings[getValue('e')])) {
 					return 2;
-				}else {
+				}else if(input.contains(""+mappings[getValue('f')])){
 					return 3;
 				}
 			}
