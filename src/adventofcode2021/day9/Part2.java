@@ -5,19 +5,19 @@ import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 public class Part2 {
 	public static void main(String[] args) throws Exception{
 		Scanner in = new Scanner(new FileReader(new File("data/day9.txt")));
 		
-		int risk = 0;
 		int[][] data = null;
 		int y = 0;
 		
 		while(in.hasNextLine()) {
 			String s = in.nextLine();
 			if(data == null)
-				data = new int[5][s.length()];
+				data = new int[100][s.length()];
 			String[] split = s.split("");
 			for(int i = 0; i < split.length; i++) {
 				data[y][i] = Integer.valueOf(split[i]);
@@ -34,11 +34,18 @@ public class Part2 {
 				int up = (y == 0 ? Integer.MAX_VALUE : data[y-1][x]);
 				int down = (y == data.length-1 ? Integer.MAX_VALUE : data[y+1][x]);
 				
-				if(value < left && value < right && value < up && value < down)
+				if(value == 0 || (value < left && value < right && value < up && value < down))
 					basins.add(getBasinSize(data, x, y));
 			}
 		}
-		System.out.println(risk);
+		List<Integer> sorted = basins.stream().sorted().collect(Collectors.toList());
+		
+		int result = 1;
+		for(int i = sorted.size()-1; i > sorted.size()-4; i--) {
+			result *= sorted.get(i);
+		}
+		
+		System.out.println(result);
 		
 		in.close();
 		
@@ -57,6 +64,8 @@ public class Part2 {
 				
 				if(value == 9)
 					continue;
+				if(value == 0)
+					result[y][x] = true;
 				
 				if(left > value || right > value || up > value || down > value) {
 					result[y][x] = true;
@@ -66,27 +75,17 @@ public class Part2 {
 		return getRowSize(result, x1, y1);
 	}
 	private static int getRowSize(boolean[][] data, int x, int y) {
-		int count = 0;
-		for(int x1 = x; x1 >= 0; x1--) {
-			boolean value = data[y][x1];
-			if(value)
-				count++;
-			else
-				break;
-			if(value && y+1 < data.length && data[y+1][x1]) {
-				count += getRowSize(data, x1, y+1);
-			}
-		}
-		for(int x1 = x + 1; x1 < data[y].length; x1++) {
-			boolean value = data[y][x1];
-			if(value)
-				count++;
-			else
-				break;
-			if(value && y+1 < data.length && data[y+1][x1]) {
-				count += getRowSize(data, x1, y+1);
-			}
-		}
+		if(y < 0 || y >= data.length || x < 0 || x >= data[0].length)
+			return 0;
+		if(!data[y][x])
+			return 0;
+		int count = 1;
+		data[y][x] = false;
+		count += getRowSize(data, x-1, y);
+		count += getRowSize(data, x+1, y);
+		count += getRowSize(data, x, y-1);
+		count += getRowSize(data, x, y+1);
+		
 		return count;
 	}
 }

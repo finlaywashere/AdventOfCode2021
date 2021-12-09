@@ -9,6 +9,7 @@ public class Part1 {
 		Scanner in = new Scanner(new FileReader(new File("data/day9.txt")));
 		
 		int risk = 0;
+		int count = 0;
 		int[][] data = null;
 		int y = 0;
 		
@@ -28,6 +29,7 @@ public class Part1 {
 				
 				if(value == 0) {
 					risk++;
+					count++;
 					continue;
 				}
 				
@@ -36,10 +38,13 @@ public class Part1 {
 				int up = (y == 0 ? Integer.MAX_VALUE : data[y-1][x]);
 				int down = (y == data.length-1 ? Integer.MAX_VALUE : data[y+1][x]);
 				
-				if(value < left && value < right && value < up && value < down)
+				if(value < left && value < right && value < up && value < down) {
 					risk += value + 1;
+					count++;
+				}
 			}
 		}
+		System.out.println(count);
 		System.out.println(risk);
 		
 		in.close();
