@@ -44,8 +44,6 @@ public class Part2 {
 		
 	}
 	private static int getBasinSize(int[][] data, int x1, int y1) {
-		int count = 0;
-		
 		boolean[][] result = new boolean[data.length][data[0].length];
 		
 		for(int y = 0; y < data.length; y++) {
@@ -65,8 +63,30 @@ public class Part2 {
 				}
 			}
 		}
-		
-		
+		return getRowSize(result, x1, y1);
+	}
+	private static int getRowSize(boolean[][] data, int x, int y) {
+		int count = 0;
+		for(int x1 = x; x1 >= 0; x1--) {
+			boolean value = data[y][x1];
+			if(value)
+				count++;
+			else
+				break;
+			if(value && y+1 < data.length && data[y+1][x1]) {
+				count += getRowSize(data, x1, y+1);
+			}
+		}
+		for(int x1 = x + 1; x1 < data[y].length; x1++) {
+			boolean value = data[y][x1];
+			if(value)
+				count++;
+			else
+				break;
+			if(value && y+1 < data.length && data[y+1][x1]) {
+				count += getRowSize(data, x1, y+1);
+			}
+		}
 		return count;
 	}
 }
