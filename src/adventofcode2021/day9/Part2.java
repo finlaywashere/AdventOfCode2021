@@ -34,7 +34,7 @@ public class Part2 {
 				int up = (y == 0 ? Integer.MAX_VALUE : data[y-1][x]);
 				int down = (y == data.length-1 ? Integer.MAX_VALUE : data[y+1][x]);
 				
-				if(value == 0 || (value < left && value < right && value < up && value < down))
+				if(value <= left && value <= right && value <= up && value <= down)
 					basins.add(getBasinSize(data, x, y));
 			}
 		}
@@ -64,27 +64,25 @@ public class Part2 {
 				
 				if(value == 9)
 					continue;
-				if(value == 0)
-					result[y][x] = true;
-				
 				if(left > value || right > value || up > value || down > value) {
 					result[y][x] = true;
 				}
 			}
 		}
-		return getRowSize(result, x1, y1);
+		return getRowSize(result, data, x1, y1, -1);
 	}
-	private static int getRowSize(boolean[][] data, int x, int y) {
+	private static int getRowSize(boolean[][] data, int[][] oData, int x, int y, int lastVal) {
 		if(y < 0 || y >= data.length || x < 0 || x >= data[0].length)
 			return 0;
-		if(!data[y][x])
+		if(!data[y][x] || (oData[y][x] <= lastVal))
 			return 0;
 		int count = 1;
 		data[y][x] = false;
-		count += getRowSize(data, x-1, y);
-		count += getRowSize(data, x+1, y);
-		count += getRowSize(data, x, y-1);
-		count += getRowSize(data, x, y+1);
+		int val = oData[y][x];
+		count += getRowSize(data, oData, x-1, y,val);
+		count += getRowSize(data, oData, x+1, y,val);
+		count += getRowSize(data, oData, x, y-1,val);
+		count += getRowSize(data, oData, x, y+1,val);
 		
 		return count;
 	}
