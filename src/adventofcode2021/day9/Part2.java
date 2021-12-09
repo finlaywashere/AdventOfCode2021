@@ -34,7 +34,7 @@ public class Part2 {
 				int up = (y == 0 ? Integer.MAX_VALUE : data[y-1][x]);
 				int down = (y == data.length-1 ? Integer.MAX_VALUE : data[y+1][x]);
 				
-				if(value <= left && value <= right && value <= up && value <= down)
+				if(value != 9 && value <=left && value < right && value < up && value < down)
 					basins.add(getBasinSize(data, x, y));
 			}
 		}
@@ -53,36 +53,32 @@ public class Part2 {
 	private static int getBasinSize(int[][] data, int x1, int y1) {
 		boolean[][] result = new boolean[data.length][data[0].length];
 		
-		for(int y = 0; y < data.length; y++) {
-			for(int x = 0; x < data[y].length; x++) {
-				int left = (x == 0 ? Integer.MAX_VALUE : data[y][x-1]);
-				int right = (x == data[y].length-1 ? Integer.MAX_VALUE : data[y][x+1]);
-				int up = (y == 0 ? Integer.MAX_VALUE : data[y-1][x]);
-				int down = (y == data.length-1 ? Integer.MAX_VALUE : data[y+1][x]);
-				
-				int value = data[y][x];
-				
-				if(value == 9)
-					continue;
-				if(left > value || right > value || up > value || down > value) {
-					result[y][x] = true;
-				}
-			}
-		}
 		return getRowSize(result, data, x1, y1, -1);
 	}
 	private static int getRowSize(boolean[][] data, int[][] oData, int x, int y, int lastVal) {
 		if(y < 0 || y >= data.length || x < 0 || x >= data[0].length)
 			return 0;
-		if(!data[y][x] || (oData[y][x] <= lastVal))
+		if(data[y][x] || oData[y][x] <= lastVal || oData[y][x] == 9)
 			return 0;
 		int count = 1;
-		data[y][x] = false;
+		data[y][x] = true;
 		int val = oData[y][x];
+		oData[y][x] = Integer.MAX_VALUE;
 		count += getRowSize(data, oData, x-1, y,val);
 		count += getRowSize(data, oData, x+1, y,val);
 		count += getRowSize(data, oData, x, y-1,val);
 		count += getRowSize(data, oData, x, y+1,val);
+		
+		if(lastVal == -1) {
+			System.out.println("XY "+x+" "+y+" C "+count);
+			for(int y1 = 0; y1 < data.length; y1++) {
+				String s = "";
+				for(int x1 = 0; x1 < data[y1].length; x1++) {
+					s += (data[y1][x1] ? "T" : "F") + " ";
+				}
+				System.out.println(s);
+			}
+		}
 		
 		return count;
 	}
