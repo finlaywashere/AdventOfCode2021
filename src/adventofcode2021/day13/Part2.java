@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-public class Part1 {
+public class Part2 {
 	public static void main(String[] args) throws Exception{
 		Scanner in = new Scanner(new FileReader(new File("data/day13.txt")));
 		List<String> points = new ArrayList<String>();
@@ -38,21 +38,23 @@ public class Part1 {
 			data[y][x] = true;
 		}
 		for(int i = 0; i < instructions.size(); i++) {
-			if(i == 1) break;
 			String[] split = instructions.get(i).split("\\=");
 			String axis = split[0];
 			int value = Integer.valueOf(split[1]);
 			data = fold(data, value, axis.equals("y"));
 		}
 		in.close();
-		int count = 0;
 		for(int y = 0; y < data.length; y++) {
+			String s = "";
 			for(int x = 0; x < data[y].length; x++) {
-				if(data[y][x])
-					count++;
+				if(data[y][x]) {
+					s += "E";
+				}else {
+					s += " ";
+				}
 			}
+			System.out.println(s);
 		}
-		System.out.println("Answer: "+count);
 	}
 	private static boolean[][] fold(boolean[][] input, int fold, boolean yAxis){
 		if(yAxis) {
