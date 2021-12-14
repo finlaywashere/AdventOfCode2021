@@ -39,17 +39,18 @@ public class Part2 {
 					if(s.equals(s1)) {
 						char[] sC = s.toCharArray();
 						char[] s1C = s2.toCharArray();
-						long value = data.get(s)+1;
-						value += (tmp.containsKey(s) ? tmp.get(s) : 0);
-						tmp.put(""+sC[0]+s1C[0], value);
-						tmp.put(""+s1C[0]+sC[1], value);
+						long value = data.get(s);
+						String k1 = ""+sC[0]+s1C[0];
+						String k2 = ""+s1C[0]+sC[1];
+						tmp.put(k1, (tmp.containsKey(k1) ? tmp.get(k1) : 0) + value);
+						tmp.put(k2, (tmp.containsKey(k2) ? tmp.get(k2) : 0) + value);
 						
 						found = true;
 						break;
 					}
 				}
 				if(!found) {
-					tmp.put(s, data.get(s));
+					tmp.put(s, (tmp.containsKey(s) ? tmp.get(s) : 0) + data.get(s));
 				}
 			}
 			data = tmp;
@@ -61,10 +62,10 @@ public class Part2 {
 			counts[c[1]-'A'] += data.get(s);
 		}
 		char last = start.toCharArray()[start.length()-1];
+		counts[last-'A']+=2;
 		for(int i = 0; i < counts.length; i++) {
 			counts[i] /= 2;
 		}
-		counts[last-'A']--;
 		Arrays.sort(counts);
 		long lowest = 0;
 		for(long i : counts) {
