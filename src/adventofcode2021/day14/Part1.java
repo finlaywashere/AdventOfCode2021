@@ -19,7 +19,7 @@ public class Part1 {
 			pairs.add(split);
 		}
 		in.close();
-		for(int round = 0; round < 40; round++) {
+		for(int round = 0; round < 10; round++) {
 			String curr = "";
 			int last = 0;
 			char[] startC = start.toCharArray();
