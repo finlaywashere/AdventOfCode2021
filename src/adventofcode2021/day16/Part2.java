@@ -41,7 +41,7 @@ public class Part2 {
 				binary = binary.substring(5);
 			}
 			long value = Long.valueOf(data,2);
-			System.out.println(value);
+			System.out.println("Value: "+value);
 			return new LongPoint(value,6+l*5);
 		}else {
 			int lType = Integer.valueOf(binary.substring(6, 7),2);
@@ -74,53 +74,61 @@ public class Part2 {
 			}
 			if(type == 0) {
 				// sum
-				System.out.println("+");
 				long sum = 0;
+				String s1 = "";
 				for(long i : values) {
 					sum += i;
+					s1 += i + " + ";
 				}
+				System.out.println(s1);
 				return new LongPoint(sum,fLen);
 			}else if(type == 1) {
 				// product
-				System.out.println("*");
 				long prod = 1;
+				String s1 = "";
 				for(long i : values) {
 					prod *= i;
+					s1 += i +" * ";
 				}
+				System.out.println(s1);
 				return new LongPoint(prod,fLen);
 			}else if(type == 2) {
 				// minimum
-				System.out.println("MIN");
+				String s1 = "min ";
 				long min = Integer.MAX_VALUE;
 				for(long i : values) {
+					s1 += i +" : ";
 					if(i < min)
 						min = i;
 				}
+				System.out.println(s1);
 				return new LongPoint(min,fLen);
 			}else if(type == 3) {
 				// maximum
-				System.out.println("MAX");
+				String s1 = "max ";
 				long max = Integer.MIN_VALUE;
 				for(long i : values) {
+					s1 += i +" : ";
 					if(i > max)
 						max = i;
 				}
+				System.out.println(s1);
 				return new LongPoint(max,fLen);
 			}else if(type == 5) {
 				// greater than
-				System.out.println(">");
+				System.out.println(values.get(0)+" > "+values.get(1));
 				if(values.get(0) > values.get(1))
 					return new LongPoint(1,fLen);
 				return new LongPoint(0,fLen);
 			}else if(type == 6) {
 				// less than
-				System.out.println("<");
+				System.out.println(values.get(0)+" < "+values.get(1));
 				if(values.get(0) > values.get(1))
 					return new LongPoint(0,fLen);
 				return new LongPoint(1,fLen);
 			}else if(type == 7) {
 				// equal to
-				System.out.println("==");
+				System.out.println(values.get(0)+" == "+values.get(1));
 				if(values.get(0) == values.get(1))
 					return new LongPoint(1,fLen);
 				return new LongPoint(0,fLen);
