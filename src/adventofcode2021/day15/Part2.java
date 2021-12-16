@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.util.Scanner;
 
-public class Part1 {
+public class Part2 {
 	public static void main(String[] args) throws Exception{
 		Scanner in = new Scanner(new FileReader(new File("data/day15.txt")));
 		int[][] risks = null;
@@ -20,7 +20,20 @@ public class Part1 {
 			y++;
 		}
 		in.close();
-		int min = dijkstra(risks);
+		int[][] fullRisk = new int[risks.length*5][risks[0].length*5];
+		for(y = 0; y < risks.length; y++) {
+			for(int x = 0; x < risks[0].length; x++) {
+				for(int i = 0; i < 25; i++) {
+					int y2 = i / 5;
+					int x2 = i % 5;
+					int dist = x2 + y2;
+					int val = risks[y][x] + dist;
+					while(val > 9) val -= 9;
+					fullRisk[y+(y2*risks.length)][x+(x2*risks.length)] = val;
+				}
+			}
+		}
+		int min = dijkstra(fullRisk);
 		System.out.println("Min: "+min);
 	}
 	private static void round(int[][] dist, int[][] risks) {
