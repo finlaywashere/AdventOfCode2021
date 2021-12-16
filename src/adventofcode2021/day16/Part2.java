@@ -12,9 +12,10 @@ public class Part2 {
 		String s = in.nextLine();
 		String b = hexToBinary(s);
 		
-		long result = parsePacket(b).x;
+		LongPoint result = parsePacket(b);
 		in.close();
-		System.out.println("Result: "+result);
+		System.out.println("Result: "+result.x);
+		
 	}
 	private static String hexToBinary(String s) {
 		String b = "";
@@ -41,12 +42,13 @@ public class Part2 {
 				binary = binary.substring(5);
 			}
 			long value = Long.valueOf(data,2);
-			System.out.println("Value: "+value);
+			System.out.println(value);
 			return new LongPoint(value,6+l*5);
 		}else {
 			int lType = Integer.valueOf(binary.substring(6, 7),2);
 			int fLen = 0;
 			List<Long> values = new ArrayList<Long>();
+			
 			if(lType == 0) {
 				int len = Integer.valueOf(binary.substring(7, 22),2);
 				int tLen = 0;
@@ -75,60 +77,46 @@ public class Part2 {
 			if(type == 0) {
 				// sum
 				long sum = 0;
-				String s1 = "";
 				for(long i : values) {
 					sum += i;
-					s1 += i + " + ";
 				}
-				System.out.println(s1);
 				return new LongPoint(sum,fLen);
 			}else if(type == 1) {
 				// product
 				long prod = 1;
-				String s1 = "";
 				for(long i : values) {
 					prod *= i;
-					s1 += i +" * ";
 				}
-				System.out.println(s1);
 				return new LongPoint(prod,fLen);
 			}else if(type == 2) {
 				// minimum
-				String s1 = "min ";
 				long min = Integer.MAX_VALUE;
 				for(long i : values) {
-					s1 += i +" : ";
 					if(i < min)
 						min = i;
 				}
-				System.out.println(s1);
+
 				return new LongPoint(min,fLen);
 			}else if(type == 3) {
 				// maximum
-				String s1 = "max ";
 				long max = Integer.MIN_VALUE;
 				for(long i : values) {
-					s1 += i +" : ";
 					if(i > max)
 						max = i;
 				}
-				System.out.println(s1);
 				return new LongPoint(max,fLen);
 			}else if(type == 5) {
 				// greater than
-				System.out.println(values.get(0)+" > "+values.get(1));
 				if(values.get(0) > values.get(1))
 					return new LongPoint(1,fLen);
 				return new LongPoint(0,fLen);
 			}else if(type == 6) {
 				// less than
-				System.out.println(values.get(0)+" < "+values.get(1));
 				if(values.get(0) > values.get(1))
 					return new LongPoint(0,fLen);
 				return new LongPoint(1,fLen);
 			}else if(type == 7) {
 				// equal to
-				System.out.println(values.get(0)+" == "+values.get(1));
 				if(values.get(0) == values.get(1))
 					return new LongPoint(1,fLen);
 				return new LongPoint(0,fLen);
