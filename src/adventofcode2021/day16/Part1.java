@@ -3,7 +3,6 @@ package adventofcode2021.day16;
 import java.awt.Point;
 import java.io.File;
 import java.io.FileReader;
-import java.math.BigInteger;
 import java.util.Scanner;
 
 public class Part1 {

@@ -41,23 +41,50 @@ public class Part2 {
 					break;
 				binary = binary.substring(5);
 			}
-			long value = Long.valueOf(data,2);
-			System.out.println(value);
+			long value = Long.valueOf(data, 2);
+			if(value < 0)
+				System.err.println("Number under/overflow!");
+			System.out.println("Value: "+value);
 			return new LongPoint(value,6+l*5);
 		}else {
 			int lType = Integer.valueOf(binary.substring(6, 7),2);
 			int fLen = 0;
 			List<Long> values = new ArrayList<Long>();
-			
+			switch(type) {
+			case 0:
+				System.out.println("+");
+				break;
+			case 1:
+				System.out.println("*");
+				break;
+			case 2:
+				System.out.println("min");
+				break;
+			case 3:
+				System.out.println("max");
+				break;
+			case 5:
+				System.out.println(">");
+				break;
+			case 6:
+				System.out.println("<");
+				break;
+			case 7:
+				System.out.println("==");
+				break;
+				
+			}
 			if(lType == 0) {
 				int len = Integer.valueOf(binary.substring(7, 22),2);
 				int tLen = 0;
 				binary = binary.substring(22);
 				while(true) {
 					LongPoint p = parsePacket(binary);
+					if(p.x < 0)
+						System.err.println("Integer overflow!!!");
 					tLen += p.y;
 					values.add(p.x);
-					binary = binary.substring(p.y);
+					binary = binary.substring((int) p.y);
 					if(Math.abs(tLen-len) < 8)
 						break;
 				}
@@ -68,12 +95,15 @@ public class Part2 {
 				binary = binary.substring(18);
 				for(int i = 0; i < nPackets; i++) {
 					LongPoint p = parsePacket(binary);
+					if(p.x < 0)
+						System.err.println("Integer overflow!!!");
 					values.add(p.x);
 					len += p.y;
-					binary = binary.substring(p.y);
+					binary = binary.substring((int) p.y);
 				}
 				fLen = len + 18;
 			}
+			System.out.println("END");
 			if(type == 0) {
 				// sum
 				long sum = 0;
@@ -107,17 +137,17 @@ public class Part2 {
 				return new LongPoint(max,fLen);
 			}else if(type == 5) {
 				// greater than
-				if(values.get(0) > values.get(1))
+				if(values.get(0).longValue() > values.get(1).longValue())
 					return new LongPoint(1,fLen);
 				return new LongPoint(0,fLen);
 			}else if(type == 6) {
 				// less than
-				if(values.get(0) > values.get(1))
-					return new LongPoint(0,fLen);
-				return new LongPoint(1,fLen);
+				if(values.get(0).longValue() < values.get(1).longValue())
+					return new LongPoint(1,fLen);
+				return new LongPoint(0,fLen);
 			}else if(type == 7) {
 				// equal to
-				if(values.get(0) == values.get(1))
+				if(values.get(0).longValue() == values.get(1).longValue())
 					return new LongPoint(1,fLen);
 				return new LongPoint(0,fLen);
 			}

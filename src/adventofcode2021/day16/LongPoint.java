@@ -2,16 +2,15 @@ package adventofcode2021.day16;
 
 public class LongPoint {
 	long x;
-	int y;
-	public LongPoint(long x, int y) {
-		super();
+	long y;
+	public LongPoint(long x, long y) {
 		this.x = x;
 		this.y = y;
 	}
 	public long getX() {
 		return x;
 	}
-	public int getY() {
+	public long getY() {
 		return y;
 	}
 }
