@@ -2,23 +2,35 @@ package adventofcode2021.day18;
 
 import java.io.File;
 import java.io.FileReader;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
-public class Part1 {
+public class Part2 {
 	public static void main(String[] args) throws Exception{
 		Scanner in = new Scanner(new FileReader(new File("data/day18.txt")));
-		String last = null;
+		List<String> possibilities = new ArrayList<String>();
 		while(in.hasNextLine()) {
 			String s = in.nextLine();
-			if(last == null) {
-				last = s;
-				continue;
+			possibilities.add(s);
+		}
+		int highest = Integer.MIN_VALUE;
+		
+		for(int i = 0; i < possibilities.size(); i++) {
+			String s = possibilities.get(i);
+			for(int i1 = 0; i1 < possibilities.size(); i1++) {
+				if(i == i1) continue;
+				String s1 = possibilities.get(i1);
+				int mag = magnitude(add(s, s1));
+				int mag2 = magnitude(add(s1,s));
+				if(mag > highest)
+					highest = mag;
+				if(mag2 > highest)
+					highest = mag;
 			}
-			last = add(last, s);
 		}
 		
-		System.out.println(last);
-		System.out.println("Magnitude: "+magnitude(last));
+		System.out.println("Magnitude: "+highest);
 	}
 	private static int magnitude(String s) {
 		s = s.substring(1, s.length()-1);
