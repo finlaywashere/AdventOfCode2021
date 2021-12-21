@@ -38,4 +38,8 @@ public class XYZPoint {
 	public String toString() {
 		return x+","+y+","+z;
 	}
+	@Override
+	public int hashCode() {
+		return x + y*5000 + z * 5000000;
+	}
 }

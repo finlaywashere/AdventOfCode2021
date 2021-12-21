@@ -33,6 +33,7 @@ public class Part1 {
 			
 			curr.add(new XYZPoint(x,y,z));
 		}
+		scanners.add(curr);
 		/*
 		 * This calculation is ungodly large
 		 * Its something like n^16
@@ -49,7 +50,8 @@ public class Part1 {
 				List<XYZPoint> sc2 = scanners.get(i1);
 				List<List<XYZPoint>> sc2P = computePermutations(sc2);
 				boolean found = false;
-				for(List<XYZPoint> p1 : sc1P) {
+				for(int i2 = 0; i2 < sc1P.size(); i2++) {
+					List<XYZPoint> p1 = sc1P.get(i2);
 					for(List<XYZPoint> p2 : sc2P) {
 						XYZPoint offset2 = overlaps(p1, p2);
 						if(offset2 != null) {
@@ -57,9 +59,9 @@ public class Part1 {
 							offset2.transform(offset.get(i));
 							System.out.println("Found overlapping scanners!\nI: "+i+" I1:"+i1);
 							System.out.println("Offset: "+offset2);
-							for(XYZPoint p : p1) {
+							for(XYZPoint p : p2) {
 								p.transform(offset2);
-								map.add(p);
+								map.add(permutations(i2,p));
 							}
 							offset.put(i1, offset2);
 							found = true;
@@ -87,145 +89,117 @@ public class Part1 {
 		for(int rot = 0; rot < 24; rot++) {
 			List<XYZPoint> curr = new ArrayList<XYZPoint>();
 			for(XYZPoint p : input) {
-				switch(rot) {
-				case 0:
-					XYZPoint newP = new XYZPoint(p.x,p.y,p.z);
-					curr.add(newP);
-					break;
-				case 1:
-					newP = new XYZPoint(p.x,p.y,-p.z);
-					curr.add(newP);
-					break;
-				case 2:
-					newP = new XYZPoint(p.x,-p.y,-p.z);
-					curr.add(newP);
-					break;
-				case 3:
-					newP = new XYZPoint(p.x,-p.y,p.z);
-					curr.add(newP);
-					break;
-				case 4:
-					newP = new XYZPoint(-p.x,p.y,p.z);
-					curr.add(newP);
-					break;
-				case 5:
-					newP = new XYZPoint(-p.x,-p.y,p.z);
-					curr.add(newP);
-					break;
-				case 6:
-					newP = new XYZPoint(-p.x,-p.y,-p.z);
-					curr.add(newP);
-					break;
-				case 7:
-					newP = new XYZPoint(-p.x,p.y,-p.z);
-					curr.add(newP);
-					break;
-				case 8:
-					newP = new XYZPoint(p.y,p.x,p.z);
-					curr.add(newP);
-					break;
-				case 9:
-					newP = new XYZPoint(p.y,-p.x,p.z);
-					curr.add(newP);
-					break;
-				case 10:
-					newP = new XYZPoint(p.y,p.x,-p.z);
-					curr.add(newP);
-					break;
-				case 11:
-					newP = new XYZPoint(p.y,-p.x,-p.z);
-					curr.add(newP);
-					break;
-				case 12:
-					newP = new XYZPoint(-p.y,p.x,p.z);
-					curr.add(newP);
-					break;
-				case 13:
-					newP = new XYZPoint(-p.y,-p.x,p.z);
-					curr.add(newP);
-					break;
-				case 14:
-					newP = new XYZPoint(-p.y,p.x,-p.z);
-					curr.add(newP);
-					break;
-				case 15:
-					newP = new XYZPoint(-p.y,-p.x,-p.z);
-					curr.add(newP);
-					break;
-				case 16:
-					newP = new XYZPoint(p.z,p.y,p.x);
-					curr.add(newP);
-					break;
-				case 17:
-					newP = new XYZPoint(p.z,-p.y,p.x);
-					curr.add(newP);
-					break;
-				case 18:
-					newP = new XYZPoint(p.z,p.y,-p.x);
-					curr.add(newP);
-					break;
-				case 19:
-					newP = new XYZPoint(p.z,-p.y,-p.x);
-					curr.add(newP);
-					break;
-				case 20:
-					newP = new XYZPoint(-p.z,p.y,p.x);
-					curr.add(newP);
-					break;
-				case 21:
-					newP = new XYZPoint(-p.z,-p.y,p.x);
-					curr.add(newP);
-					break;
-				case 22:
-					newP = new XYZPoint(-p.z,p.y,-p.x);
-					curr.add(newP);
-					break;
-				case 23:
-					newP = new XYZPoint(-p.z,-p.y,-p.x);
-					curr.add(newP);
-					break;
-				case 24:
-					newP = new XYZPoint(p.z,p.x,p.y);
-					curr.add(newP);
-					break;
-				case 25:
-					newP = new XYZPoint(p.z,-p.x,p.y);
-					curr.add(newP);
-					break;
-				case 26:
-					newP = new XYZPoint(p.z,p.x,-p.y);
-					curr.add(newP);
-					break;
-				case 27:
-					newP = new XYZPoint(p.z,-p.x,-p.y);
-					curr.add(newP);
-					break;
-				case 28:
-					newP = new XYZPoint(-p.z,p.x,p.y);
-					curr.add(newP);
-					break;
-				case 29:
-					newP = new XYZPoint(-p.z,-p.x,p.y);
-					curr.add(newP);
-					break;
-				case 30:
-					newP = new XYZPoint(-p.z,p.x,-p.y);
-					curr.add(newP);
-					break;
-				case 31:
-					newP = new XYZPoint(-p.z,-p.x,-p.y);
-					curr.add(newP);
-					break;
-				}
+				curr.add(permutations(rot, p));
 			}
 			retValue.add(curr);
 		}
 		return retValue;
 	}
+	private static XYZPoint permutations(int rot, XYZPoint p){
+		switch(rot) {
+		case 0:
+			XYZPoint newP = new XYZPoint(p.x,p.y,p.z);
+			return newP;
+		case 1:
+			newP = new XYZPoint(p.x,p.y,-p.z);
+			return newP;
+		case 2:
+			newP = new XYZPoint(p.x,-p.y,-p.z);
+			return newP;
+		case 3:
+			newP = new XYZPoint(p.x,-p.y,p.z);
+			return newP;
+		case 4:
+			newP = new XYZPoint(-p.x,p.y,p.z);
+			return newP;
+		case 5:
+			newP = new XYZPoint(-p.x,-p.y,p.z);
+			return newP;
+		case 6:
+			newP = new XYZPoint(-p.x,-p.y,-p.z);
+			return newP;
+		case 7:
+			newP = new XYZPoint(-p.x,p.y,-p.z);
+			return newP;
+		case 8:
+			newP = new XYZPoint(p.y,p.x,p.z);
+			return newP;
+		case 9:
+			newP = new XYZPoint(p.y,-p.x,p.z);
+			return newP;
+		case 10:
+			newP = new XYZPoint(p.y,p.x,-p.z);
+			return newP;
+		case 11:
+			newP = new XYZPoint(p.y,-p.x,-p.z);
+			return newP;
+		case 12:
+			newP = new XYZPoint(-p.y,p.x,p.z);
+			return newP;
+		case 13:
+			newP = new XYZPoint(-p.y,-p.x,p.z);
+			return newP;
+		case 14:
+			newP = new XYZPoint(-p.y,p.x,-p.z);
+			return newP;
+		case 15:
+			newP = new XYZPoint(-p.y,-p.x,-p.z);
+			return newP;
+		case 16:
+			newP = new XYZPoint(p.z,p.y,p.x);
+			return newP;
+		case 17:
+			newP = new XYZPoint(p.z,-p.y,p.x);
+			return newP;
+		case 18:
+			newP = new XYZPoint(p.z,p.y,-p.x);
+			return newP;
+		case 19:
+			newP = new XYZPoint(p.z,-p.y,-p.x);
+			return newP;
+		case 20:
+			newP = new XYZPoint(-p.z,p.y,p.x);
+			return newP;
+		case 21:
+			newP = new XYZPoint(-p.z,-p.y,p.x);
+			return newP;
+		case 22:
+			newP = new XYZPoint(-p.z,p.y,-p.x);
+			return newP;
+		case 23:
+			newP = new XYZPoint(-p.z,-p.y,-p.x);
+			return newP;
+		case 24:
+			newP = new XYZPoint(p.z,p.x,p.y);
+			return newP;
+		case 25:
+			newP = new XYZPoint(p.z,-p.x,p.y);
+			return newP;
+		case 26:
+			newP = new XYZPoint(p.z,p.x,-p.y);
+			return newP;
+		case 27:
+			newP = new XYZPoint(p.z,-p.x,-p.y);
+			return newP;
+		case 28:
+			newP = new XYZPoint(-p.z,p.x,p.y);
+			return newP;
+		case 29:
+			newP = new XYZPoint(-p.z,-p.x,p.y);
+			return newP;
+		case 30:
+			newP = new XYZPoint(-p.z,p.x,-p.y);
+			return newP;
+		case 31:
+			newP = new XYZPoint(-p.z,-p.x,-p.y);
+			return newP;
+		}
+		return null;
+	}
 	/**
 	 * Finds the zero point where both lists of beacons overlap
 	 * Returns null if there is no overlap > 12 points
-	 * Returns the x,y,z transformations that must be applied to a point in p1 to get the corresponding point in p2
+	 * Returns the x,y,z transformations that must be applied to a point in p2 to get the corresponding point in p1
 	 */
 	private static XYZPoint overlaps(List<XYZPoint> p1, List<XYZPoint> p2) {
 		for(XYZPoint po : p1) {
@@ -234,13 +208,15 @@ public class Part1 {
 				for(XYZPoint po3 : p1) {
 					for(XYZPoint po4 : p2) {
 						XYZPoint shifted = new XYZPoint(po3.x-po.x, po3.y-po.y, po3.z-po.z);
-						XYZPoint shifted2 = new XYZPoint(-(po4.x-po2.x),po4.y-po2.y,-(po4.z-po2.z));
-						if(shifted.equals(shifted2))
+						XYZPoint shifted2 = new XYZPoint(po4.x-po2.x,po4.y-po2.y,po4.z-po2.z);
+						if(shifted.equals(shifted2)) {
 							count++;
+							break;
+						}
 					}
 				}
 				if(count >= 12) {
-					XYZPoint ret = new XYZPoint(po2.x-po.x,po2.y-po.y,po2.z-po.z);
+					XYZPoint ret = new XYZPoint(po.x-po2.x,po.y-po2.y,po.z-po2.z);
 					
 					return ret;
 				}
