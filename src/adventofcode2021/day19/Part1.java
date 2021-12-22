@@ -3,10 +3,9 @@ package adventofcode2021.day19;
 import java.io.File;
 import java.io.FileReader;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
 
@@ -39,9 +38,14 @@ public class Part1 {
 		 * Its something like n^16
 		 * Might take a little while
 		 */
-		Map<Integer,XYZPoint> offset = new HashMap<Integer,XYZPoint>();
-		offset.put(0, new XYZPoint(0,0,0));
 		Set<XYZPoint> map = new LinkedHashSet<XYZPoint>();
+		XYZPoint[][] offsets = new XYZPoint[scanners.size()][scanners.size()];
+		int[][] rotations = new int[scanners.size()][scanners.size()];
+		for(int i = 0; i < rotations.length; i++) {
+			for(int i1 = 0; i1 < rotations[i].length; i1++) {
+				rotations[i][i1] = -1;
+			}
+		}
 		for(int i = 0; i < scanners.size(); i++) {
 			List<XYZPoint> sc1 = scanners.get(i);
 			List<List<XYZPoint>> sc1P = computePermutations(sc1);
@@ -50,20 +54,16 @@ public class Part1 {
 				List<XYZPoint> sc2 = scanners.get(i1);
 				List<List<XYZPoint>> sc2P = computePermutations(sc2);
 				boolean found = false;
-				for(int i2 = 0; i2 < sc1P.size(); i2++) {
-					List<XYZPoint> p1 = sc1P.get(i2);
-					for(List<XYZPoint> p2 : sc2P) {
+				for(List<XYZPoint> p1 : sc1P) {
+					for(int i2 = 0; i2 < sc2P.size(); i2++) {
+						List<XYZPoint> p2 = sc2P.get(i2);
 						XYZPoint offset2 = overlaps(p1, p2);
 						if(offset2 != null) {
 							System.out.println("Relative offset: "+offset2);
-							offset2.transform(offset.get(i));
 							System.out.println("Found overlapping scanners!\nI: "+i+" I1:"+i1);
 							System.out.println("Offset: "+offset2);
-							for(XYZPoint p : p2) {
-								p.transform(offset2);
-								map.add(permutations(i2,p));
-							}
-							offset.put(i1, offset2);
+							offsets[i][i1] = offset2;
+							rotations[i][i1] = i2;
 							found = true;
 							break;
 						}
@@ -75,10 +75,40 @@ public class Part1 {
 		}
 		
 		in.close();
-		for(XYZPoint p : map) {
-			System.out.println(p);
+		for(int i = 0; i < scanners.size(); i++) {
+			XYZPoint offset = getOffset(i, offsets);
+			List<XYZPoint> start = scanners.get(i);
+			int rotation = 0;
+			for(int r : rotations[i]) {
+				if(r != -1) {
+					rotation = r;
+					break;
+				}
+			}
+			for(XYZPoint p : start) {
+				XYZPoint point = permutations(rotation, p);
+				point.transform(offset);
+				map.add(point);
+			}
+			
+		}
+		Iterator<XYZPoint> iterator = map.iterator();
+		for(int i = 0; i < map.size(); i++) {
+			System.out.println(i+" : "+iterator.next());
 		}
 		System.out.println("Count: "+map.size());
+	}
+	private static XYZPoint getOffset(int start, XYZPoint[][] offsets) {
+		if(start == 0)
+			return new XYZPoint(0,0,0);
+		for(int i = 0; i < offsets[start].length; i++) {
+			if(offsets[start][i] != null) {
+				XYZPoint p = getOffset(i, offsets);
+				p.transform(offsets[start][i]);
+				return p;
+			}
+		}
+		return null;
 	}
 	/**
 	 * This calculates (32 not 24) permutations of the input points
@@ -192,6 +222,54 @@ public class Part1 {
 			return newP;
 		case 31:
 			newP = new XYZPoint(-p.z,-p.x,-p.y);
+			return newP;
+		case 32:
+			newP = new XYZPoint(p.x,p.z,p.y);
+			return newP;
+		case 33:
+			newP = new XYZPoint(-p.x,p.z,p.y);
+			return newP;
+		case 34:
+			newP = new XYZPoint(p.x,-p.z,p.y);
+			return newP;
+		case 35:
+			newP = new XYZPoint(p.x,p.z,-p.y);
+			return newP;
+		case 36:
+			newP = new XYZPoint(-p.x,-p.z,p.y);
+			return newP;
+		case 37:
+			newP = new XYZPoint(-p.x,-p.z,-p.y);
+			return newP;
+		case 38:
+			newP = new XYZPoint(p.x,-p.z,-p.y);
+			return newP;
+		case 39:
+			newP = new XYZPoint(-p.x,p.z,-p.y);
+			return newP;
+		case 40:
+			newP = new XYZPoint(p.y,p.z,p.x);
+			return newP;
+		case 41:
+			newP = new XYZPoint(-p.y,p.z,p.x);
+			return newP;
+		case 42:
+			newP = new XYZPoint(p.y,-p.z,p.x);
+			return newP;
+		case 43:
+			newP = new XYZPoint(p.y,p.z,-p.x);
+			return newP;
+		case 44:
+			newP = new XYZPoint(-p.y,-p.z,p.x);
+			return newP;
+		case 45:
+			newP = new XYZPoint(-p.y,-p.z,-p.x);
+			return newP;
+		case 46:
+			newP = new XYZPoint(p.y,-p.z,-p.x);
+			return newP;
+		case 47:
+			newP = new XYZPoint(-p.y,p.z,-p.x);
 			return newP;
 		}
 		return null;
